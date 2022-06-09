@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="container col-6">
+        <h1>Check DB Status</h1>
+        <form action="javascript:check_db()" method="get">
+            <input type="submit" value="Check">
+        </form>
+    </div>
+    <div class="container col-6">
+        <h1>Create user</h1>
+        <form action="javascript:create_user()" method="post">
+            <label for="username">Username</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password</label><br>
+            <input type="password" id="password" name="password"><br>
+            <label for="event_id">Event_id</label><br>
+            <input type="text" id="event_id" name="event_id"><br>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+    <div class="container col-6">
+        <h1>Authenticate</h1>
+        <form action="javascript:authenticate()" method="post">
+            <label for="username_1">Username</label><br>
+            <input type="text" id="username_1" name="username_1"><br>
+            <label for="password_1">Password</label><br>
+            <input type="password" id="password_1" name="password_1"><br>
+            <label for="event_id_1">Event_id</label><br>
+            <input type="text" id="event_id_1" name="event_id_1"><br>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+    <div class="container col-6">
+        <h1>Delete all</h1>
+        <form action="javascript:delete_all()" method="post">
+            <input type="submit" value="Delete">
+        </form>
+    </div>
+    <div class="container col-6">
+        <h1>Load from CSV</h1>
+        <form action="javascript:load_csv()" method="post">
+            <label for="csv_file">CSV File</label>
+            <input id="csv_file" type="file" name="csv_file">
+            <br>
+            <input id="has_header" type="checkbox" name="has_header">
+            <label for="has_header">File has header</label>
+            <br>
+            <input type="submit">
+        </form>
+    </div>
+</div>
+<script>
+    function authenticate() {
+        let username = document.getElementById("username_1").value;
+        let password = document.getElementById("password_1").value;
+        let event_id = document.getElementById("event_id_1").value;
+        fetch("../api/v1/authenticator/authenticator/authenticate/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": get_cookie("csrftoken"),
+            },
+            body: JSON.stringify({ username: username, password: password, event_id: event_id }),
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Login success");
+            } else {
+                alert("Login failed");
+            }
+        });
+    }
+
+    function delete_all() {
+        fetch("../api/v1/authenticator/authenticator/delete_all/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": get_cookie("csrftoken"),
+            },
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Success");
+            } else {
+                alert("Something went wrong");
+            }
+        });
+    }
+
+    function check_db() {
+        fetch("../api/v1/authenticator/authenticator/db_status/", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Database working\nok: " + response.ok);
+                console.log(response)
+            } else {
+                alert("Database connection loss\nok: " + response.ok);
+                console.log(response)
+            }
+        });
+    }
+
+    function create_user() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let event_id = document.getElementById("event_id").value;
+        fetch("../api/v1/authenticator/authenticator/register/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": get_cookie("csrftoken"),
+            },
+            body: JSON.stringify({
+                'username': username,
+                'password': password,
+                'event_id': event_id
+            }),
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 201) {
+                alert("Successfully created\nok: " + response.ok);
+                console.log(response)
+            } else {
+                alert("Registration failed\nok: " + response.ok);
+                console.log(response)
+            }
+        });
+    }
+
+    function load_csv() {
+        let data = new FormData()
+        const csv_file = document.getElementById("csv_file").files[0];
+        let has_header = document.getElementById("has_header").value;
+        data.append('csv_file', csv_file);
+        data.append('has_header', has_header);
+        fetch("/api/v1/authenticator/authenticator/load_csv/", {
+            method: 'POST',
+            body: data,
+            headers: {
+                "X-CSRFToken": get_cookie("csrftoken"),
+            }
+        }).then((response) => {
+            if (response.status == 200) {
+                alert('Uploaded successfully');
+            } else {
+                alert('Something went wrong');
+            }
+        })
+    }
+</script>
+{% endblock content %}

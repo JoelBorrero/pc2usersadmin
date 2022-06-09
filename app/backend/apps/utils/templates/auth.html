@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="container col-4">
+        <h1>Check DB Status</h1>
+        <form action="javascript:check_db()" method="get">
+            <input type="submit" value="Check">
+        </form>
+    </div>
+    <div class="container col-4">
+        <h1>Create user</h1>
+        <form action="javascript:create_brand()" method="post">
+            <label for="username">Username</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">Password</label><br>
+            <input type="password" id="password" name="password"><br>
+            <label for="event_id">Event_id</label><br>
+            <input type="text" id="event_id" name="event_id"><br>
+            <input type="submit" value="Create">
+        </form>
+    </div>
+</div>
+<button onclick="logout()">Log-out</button>
+<script>
+    function login() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        fetch("../auth/login/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: username, password: password }),
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Login success");
+            } else {
+                alert("Login failed");
+            }
+        });
+    }
+
+    function logout() {
+        fetch("../auth/logout/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": get_cookie("csrftoken"),
+            },
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Success");
+            } else {
+                alert("Something went wrong");
+            }
+        });
+    }
+
+    function register() {
+        let username = document.getElementById("new_username").value;
+        let password = document.getElementById("new_password").value;
+        fetch("../api/v1/user/register/create_user/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: username, password: password }),
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 200) {
+                alert("Successfully created\n" + response);
+            } else {
+                alert("Registration failed");
+            }
+        });
+    }
+
+    function create_user() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+        let event_id = document.getElementById("event_id").value;
+        fetch("../api/v1/user/brand/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": get_cookie("csrftoken"),
+            },
+            body: JSON.stringify({
+                'username': username,
+                'password': password,
+                'event_id': event_id
+            }),
+            redirect: "follow",
+        }).then((response) => {
+            if (response.status == 201) {
+                alert("Successfully created", response.data);
+            } else {
+                alert("Registration failed", response.data);
+                console.log(response)
+            }
+        });
+    }
+</script>
+{% endblock content %}

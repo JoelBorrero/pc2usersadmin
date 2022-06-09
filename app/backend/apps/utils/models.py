@@ -16,9 +16,10 @@ class ModelBase(models.Model):
     def set_state(self, state):
         self.archived = state
         self.save()
+        pass
 
-    def delete(self, using=None, keep_parents=False):
-        self.set_state(True)
+    # def delete(self, using=None, keep_parents=False):
+    #     self.set_state(True)
 
     def get_fecha_created(self):
         return self.created.strftime('%B %d de %Y, %I:%M %p')

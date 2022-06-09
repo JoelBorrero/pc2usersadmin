@@ -37,19 +37,15 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'django_celery_beat',
-    'django_celery_results',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
-    'cloudinary',
-    'channels',
     'rest_auth'
 ]
 
 BACKEND_APPS = [
-    'backend.apps.inventory'
+    'backend.apps.authenticator'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + BACKEND_APPS
@@ -62,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # add chorsheaders
     'corsheaders.middleware.CorsMiddleware',
 ]
 
@@ -71,7 +66,7 @@ ROOT_URLCONF = '{0}.urls'.format(PROJECT_NAME)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['backend.apps.utils.templates', 'backend.apps.authenticator.templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,38 +139,6 @@ CORS_ALLOW_HEADERS = [
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
-# S3 buckets for images
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_AUTO_CREATE_BUCKET = True
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-# AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-# AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
-# AWS_DEFAULT_ACL = 'public-read'
-# AWS_QUERYSTRING_AUTH = False
-
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-HAUT_EMAIL = os.environ.get('HAUT_EMAIL', '')
-HAUT_PASSWORD = os.environ.get('HAUT_PASSWORD', '')
-SIIGO_USERNAME = os.environ.get('SIIGO_USERNAME', '')
-SIIGO_ACCES_KEY = os.environ.get('SIIGO_ACCES_KEY', '')
-
-# Channel layer definitions
-# http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
-redis_host = os.environ.get('REDIS_HOST', 'redis://redis')
-
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [(redis_host, 6379)],
-        },
-        'ROUTING': 'backend.routing.channel_routing',
-    },
-}
 
 PREFIX_URL = os.environ.get('PREFIX_URL', '')
 if PREFIX_URL is not '': PREFIX_URL = '%s/' % PREFIX_URL

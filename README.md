@@ -52,4 +52,4 @@ El archivo puede o no tener encabezado, debemos indicarlo en el formulario de ca
 
 ##Visual
 El host en el que cargamos la interfaz se encuenta en:
-http://0.0.0.0:3002/views/authenticator# pc2usersadmin
+http://0.0.0.0:3002/views/authenticator

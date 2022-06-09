@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>P C - 2</title>
+    <link rel="icon" type="image/x-icon" href="https://www.molova.co/assets/img/favicon@2x.png">
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-dark bg-dark">
+        <h1 class="text-white">PC2 Users admin</h1>
+    </nav>
+</header>
+<main role="main" class="container">
+    <div class="row m-4">
+        <div class="w-100">
+            {% block content %}{% endblock %}
+            {{user}}
+        </div>
+    </div>
+</main>
+</body>
+<script>
+    function get_cookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === name + "=") {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
